@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import API, { BASE_URL } from "../../services/api";
+import API, { BASE_URL } from "../../services/api.js";
 
 const STATUS_CONFIG = {
   pending: { label: "Under Review", color: "text-yellow-400", bg: "bg-yellow-950 border-yellow-900", dot: "bg-yellow-400 animate-pulse" },

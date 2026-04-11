@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import API from "../../services/api";
+import API from "../../services/api.js";
 
 const SKILL_SUGGESTIONS = ["React", "Node.js", "MongoDB", "JavaScript", "TypeScript",
   "Python", "SQL", "Figma", "AWS", "Docker", "Git", "Express", "Tailwind CSS"];

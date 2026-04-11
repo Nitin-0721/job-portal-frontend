@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import API from "../../services/api";
+import API from "../../services/api.js";
 
 const SKILL_SUGGESTIONS = ["React", "Node.js", "MongoDB", "JavaScript", "TypeScript",
   "Python", "SQL", "Tailwind CSS", "Git", "Express", "Figma", "AWS"];

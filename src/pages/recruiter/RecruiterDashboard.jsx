@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import API from "../../services/api";
+import API from "../../services/api.js";
 
 export default function RecruiterDashboard() {
   const navigate = useNavigate();

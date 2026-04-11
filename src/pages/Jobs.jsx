@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../services/api";
+import API from "../services/api.js";
 
 function Jobs() {
   const role = localStorage.getItem("role");
