@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import API from "../services/api.js";
+import API from "../services/api";
 
 const FILTERS = ["All", "Internship", "Full-time", "Remote", "Hybrid", "On-site", "Fresher"];
 
@@ -16,12 +16,9 @@ export default function Landing() {
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
-  const [sort, setSort] = useState("newest");
   const [savedIds, setSavedIds] = useState([]);
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
+  useEffect(() => { fetchJobs(); }, []);
 
   const fetchJobs = async () => {
     try {
@@ -42,22 +39,15 @@ export default function Landing() {
   };
 
   const filteredJobs = jobs.filter((job) => {
-    const matchSearch =
-      search === "" ||
+    const matchSearch = search === "" ||
       job.title?.toLowerCase().includes(search.toLowerCase()) ||
       job.postedBy?.companyName?.toLowerCase().includes(search.toLowerCase()) ||
       job.skills?.some((s) => s.toLowerCase().includes(search.toLowerCase()));
-
-    const matchLocation =
-      location === "" ||
+    const matchLocation = location === "" ||
       job.location?.toLowerCase().includes(location.toLowerCase());
-
-    const matchFilter =
-      activeFilter === "All" ||
-      job.type === activeFilter ||
-      job.mode === activeFilter ||
+    const matchFilter = activeFilter === "All" ||
+      job.type === activeFilter || job.mode === activeFilter ||
       (activeFilter === "Fresher" && job.experience === "Fresher");
-
     return matchSearch && matchLocation && matchFilter;
   });
 
@@ -66,28 +56,27 @@ export default function Landing() {
       <Navbar />
 
       {/* HERO */}
-      <div className="px-8 pt-16 pb-10 max-w-4xl">
+      <div className="px-4 sm:px-8 pt-10 sm:pt-16 pb-8 sm:pb-10">
         <p className="text-xs font-mono text-blue-400 tracking-widest uppercase mb-3">
           Good morning, {name} 👋
         </p>
-        <h1 className="text-5xl font-semibold tracking-tight leading-tight text-gray-100 mb-4">
+        <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight leading-tight text-gray-100 mb-3 sm:mb-4">
           Let's get you <br />
           <span className="text-blue-400">a job.</span>
         </h1>
-        <p className="text-sm text-gray-500 font-light mb-8">
-          Browse opportunities posted by top recruiters — updated in real time.
+        <p className="text-sm text-gray-500 font-light mb-6 sm:mb-8">
+          Browse opportunities posted by top recruiters.
         </p>
 
         {/* SEARCH BAR */}
-        <div className="flex gap-0 max-w-2xl bg-[#141416] border border-[#2a2a2e] rounded-xl overflow-hidden mb-5">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 max-w-2xl sm:bg-[#141416] sm:border sm:border-[#2a2a2e] sm:rounded-xl sm:overflow-hidden mb-4">
           <input type="text" placeholder="Role, skill, or company..."
             value={search} onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-sm text-gray-200 px-5 py-3.5 placeholder-gray-600" />
-          <div className="w-px bg-[#2a2a2e] my-2.5" />
+            className="flex-1 bg-[#141416] sm:bg-transparent border border-[#2a2a2e] sm:border-none outline-none text-sm text-gray-200 px-4 py-3 placeholder-gray-600 rounded-xl sm:rounded-none" />
           <input type="text" placeholder="Location"
             value={location} onChange={(e) => setLocation(e.target.value)}
-            className="bg-transparent outline-none text-sm text-gray-200 px-4 py-3.5 placeholder-gray-600 w-36" />
-          <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-6 transition-colors">
+            className="bg-[#141416] sm:bg-transparent border border-[#2a2a2e] sm:border-none outline-none text-sm text-gray-200 px-4 py-3 placeholder-gray-600 rounded-xl sm:rounded-none sm:w-36 sm:border-l sm:border-[#2a2a2e]" />
+          <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-6 py-3 rounded-xl sm:rounded-none transition-colors">
             Search →
           </button>
         </div>
@@ -96,7 +85,7 @@ export default function Landing() {
         <div className="flex gap-2 flex-wrap">
           {FILTERS.map((f) => (
             <button key={f} onClick={() => setActiveFilter(f)}
-              className={`text-xs px-4 py-1.5 rounded-full border transition-all ${
+              className={`text-xs px-3 sm:px-4 py-1.5 rounded-full border transition-all ${
                 activeFilter === f
                   ? "border-blue-500 bg-blue-950 text-blue-300"
                   : "border-[#222] bg-[#111] text-gray-500 hover:border-gray-600 hover:text-gray-300"
@@ -108,14 +97,14 @@ export default function Landing() {
       </div>
 
       {/* STATS BAR */}
-      <div className="flex gap-6 px-8 py-4 border-t border-b border-[#1a1a1e] mb-8">
-        <div>
-          <span className="font-mono text-gray-200 font-medium">{filteredJobs.length} </span>
+      <div className="flex gap-4 sm:gap-6 px-4 sm:px-8 py-3 sm:py-4 border-t border-b border-[#1a1a1e] mb-6 sm:mb-8 overflow-x-auto">
+        <div className="flex-shrink-0">
+          <span className="font-mono text-gray-200 font-medium text-sm">{filteredJobs.length} </span>
           <span className="text-gray-500 text-xs">jobs found</span>
         </div>
-        <div className="w-px bg-[#1e1e22]" />
-        <div>
-          <span className="font-mono text-gray-200 font-medium">
+        <div className="w-px bg-[#1e1e22] flex-shrink-0" />
+        <div className="flex-shrink-0">
+          <span className="font-mono text-gray-200 font-medium text-sm">
             {jobs.filter((j) => {
               const posted = new Date(j.createdAt);
               const now = new Date();
@@ -124,18 +113,10 @@ export default function Landing() {
           </span>
           <span className="text-gray-500 text-xs">new today</span>
         </div>
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs text-gray-500">Sort:</span>
-          <select value={sort} onChange={(e) => setSort(e.target.value)}
-            className="bg-[#0f0f11] border border-[#1e1e22] text-gray-400 text-xs rounded-md px-2 py-1 outline-none">
-            <option value="newest">Newest first</option>
-            <option value="salary">Salary: High to Low</option>
-          </select>
-        </div>
       </div>
 
       {/* JOB CARDS */}
-      <div className="px-8 pb-16">
+      <div className="px-4 sm:px-8 pb-16">
         {loading ? (
           <div className="text-center py-20 text-gray-600">
             <p className="text-sm font-mono animate-pulse">Loading jobs...</p>
@@ -143,22 +124,20 @@ export default function Landing() {
         ) : error ? (
           <div className="text-center py-20 text-red-400">
             <p className="text-sm">{error}</p>
-            <button onClick={fetchJobs} className="mt-3 text-xs text-blue-400 underline">
-              Try again
-            </button>
+            <button onClick={fetchJobs} className="mt-3 text-xs text-blue-400 underline">Try again</button>
           </div>
         ) : filteredJobs.length === 0 ? (
           <div className="text-center py-20 text-gray-600">
             <p className="text-4xl mb-3">🔍</p>
-            <p className="text-sm">No jobs found. Try different keywords or filters.</p>
+            <p className="text-sm">No jobs found. Try different keywords.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {filteredJobs.map((job) => (
               <div key={job._id}
-                className="bg-[#0f0f11] border border-[#1e1e22] rounded-xl p-5 flex flex-col gap-3 hover:border-[#333] transition-colors">
+                className="bg-[#0f0f11] border border-[#1e1e22] rounded-xl p-4 sm:p-5 flex flex-col gap-3 hover:border-[#333] transition-colors">
                 <div className="flex justify-between items-start">
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold font-mono bg-blue-950 text-blue-400">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold font-mono bg-blue-950 text-blue-400 flex-shrink-0">
                     {job.postedBy?.companyName?.slice(0, 2).toUpperCase() ||
                       job.postedBy?.name?.slice(0, 2).toUpperCase() || "CO"}
                   </div>
@@ -171,7 +150,7 @@ export default function Landing() {
                 </div>
 
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <p className="text-sm font-medium text-gray-200">{job.title}</p>
                     {(() => {
                       const posted = new Date(job.createdAt);
@@ -189,16 +168,10 @@ export default function Landing() {
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
-                  <span className="text-[10px] text-gray-500 border border-[#1e1e22] bg-[#111] rounded px-2 py-0.5">
-                    {job.mode}
-                  </span>
-                  <span className="text-[10px] text-gray-500 border border-[#1e1e22] bg-[#111] rounded px-2 py-0.5">
-                    {job.type}
-                  </span>
+                  <span className="text-[10px] text-gray-500 border border-[#1e1e22] bg-[#111] rounded px-2 py-0.5">{job.mode}</span>
+                  <span className="text-[10px] text-gray-500 border border-[#1e1e22] bg-[#111] rounded px-2 py-0.5">{job.type}</span>
                   {job.skills?.slice(0, 2).map((s) => (
-                    <span key={s} className="text-[10px] text-blue-400 border border-blue-900 bg-blue-950 rounded px-2 py-0.5">
-                      {s}
-                    </span>
+                    <span key={s} className="text-[10px] text-blue-400 border border-blue-900 bg-blue-950 rounded px-2 py-0.5">{s}</span>
                   ))}
                 </div>
 

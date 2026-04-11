@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import API from "../../services/api.js";
+import API from "../../services/api";
 
 const SKILL_SUGGESTIONS = ["React", "Node.js", "MongoDB", "JavaScript", "TypeScript",
   "Python", "SQL", "Tailwind CSS", "Git", "Express", "Figma", "AWS"];
@@ -21,10 +21,9 @@ export default function StudentProfile() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+  useEffect(() => { fetchProfile(); }, []);
 
   const fetchProfile = async () => {
     try {
@@ -71,7 +70,6 @@ export default function StudentProfile() {
     try {
       setSaving(true);
       await API.put("/users/profile", { ...form, skills });
-
       if (resumeFile) {
         const formData = new FormData();
         formData.append("resume", resumeFile);
@@ -79,15 +77,12 @@ export default function StudentProfile() {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
-
-      // Update localStorage
       const stored = JSON.parse(localStorage.getItem("user") || "{}");
       localStorage.setItem("user", JSON.stringify({ ...stored, name: form.name }));
-
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
-      console.error("Failed to save profile:", err);
+      console.error("Failed to save:", err);
     } finally {
       setSaving(false);
     }
@@ -98,7 +93,7 @@ export default function StudentProfile() {
   const completion = Math.round((fields.filter(Boolean).length / fields.length) * 100);
 
   if (loading) return (
-    <div className="min-h-screen bg-[#0c0c0e] text-gray-300">
+    <div className="min-h-screen bg-[#0c0c0e]">
       <Navbar />
       <div className="text-center py-32 text-gray-600 font-mono text-sm animate-pulse">Loading profile...</div>
     </div>
@@ -107,14 +102,27 @@ export default function StudentProfile() {
   return (
     <div className="min-h-screen bg-[#0c0c0e] text-gray-200">
       <Navbar />
-      <div className="flex" style={{ minHeight: "calc(100vh - 57px)" }}>
 
-        {/* SIDEBAR */}
-        <div className="w-64 border-r border-[#1e1e22] p-6 flex flex-col items-center gap-4 flex-shrink-0">
-          <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-blue-950 border-2 border-blue-800 flex items-center justify-center text-2xl font-bold font-mono text-blue-400">
-              {form.name ? form.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
-            </div>
+      {/* MOBILE SECTION TABS */}
+      <div className="lg:hidden border-b border-[#1e1e22] px-4 py-2 overflow-x-auto">
+        <div className="flex gap-2 min-w-max">
+          {SECTIONS.map((s) => (
+            <button key={s} onClick={() => setActiveSection(s)}
+              className={`text-xs px-3 py-2 rounded-lg whitespace-nowrap transition-all ${
+                activeSection === s ? "bg-[#141416] text-gray-100" : "text-gray-500"
+              }`}>
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row" style={{ minHeight: "calc(100vh - 57px)" }}>
+
+        {/* SIDEBAR — desktop only */}
+        <div className="hidden lg:flex w-64 border-r border-[#1e1e22] p-6 flex-col items-center gap-4 flex-shrink-0">
+          <div className="w-20 h-20 rounded-full bg-blue-950 border-2 border-blue-800 flex items-center justify-center text-2xl font-bold font-mono text-blue-400">
+            {form.name ? form.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
           </div>
           <div className="text-center">
             <p className="text-sm font-medium text-gray-200">{form.name || "Your Name"}</p>
@@ -148,9 +156,26 @@ export default function StudentProfile() {
           </button>
         </div>
 
-        {/* MAIN */}
-        <div className="flex-1 p-8 max-w-2xl">
-          <div className="mb-7">
+        {/* MAIN CONTENT */}
+        <div className="flex-1 p-4 sm:p-8 max-w-2xl w-full mx-auto lg:mx-0">
+
+          {/* MOBILE PROFILE HEADER */}
+          <div className="lg:hidden flex items-center gap-3 mb-6">
+            <div className="w-14 h-14 rounded-full bg-blue-950 border-2 border-blue-800 flex items-center justify-center text-lg font-bold font-mono text-blue-400">
+              {form.name ? form.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-200">{form.name || "Your Name"}</p>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="w-20 h-1 bg-[#1e1e22] rounded-full">
+                  <div className="h-full bg-blue-500 rounded-full" style={{ width: `${completion}%` }} />
+                </div>
+                <span className="text-xs text-blue-400 font-mono">{completion}%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-6 hidden lg:block">
             <h1 className="text-base font-medium text-gray-100 tracking-tight">Edit Profile</h1>
             <p className="text-xs text-gray-500 mt-1">Keep your profile updated to get better job matches</p>
           </div>
@@ -159,7 +184,7 @@ export default function StudentProfile() {
           {activeSection === "Basic Info" && (
             <div className="flex flex-col gap-4">
               <p className="text-[10px] uppercase tracking-widest text-gray-600 border-b border-[#1a1a1e] pb-2">Basic Information</p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   { name: "name", label: "Full Name", placeholder: "Your full name" },
                   { name: "email", label: "Email", placeholder: "your@email.com", type: "email" },
@@ -173,7 +198,7 @@ export default function StudentProfile() {
                       className="bg-[#0f0f11] border border-[#1e1e22] rounded-lg px-3 py-2.5 text-xs text-gray-200 outline-none focus:border-blue-500 transition-colors placeholder-gray-700" />
                   </div>
                 ))}
-                <div className="flex flex-col gap-1.5 col-span-2">
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <label className="text-xs text-gray-500">Bio</label>
                   <textarea name="bio" value={form.bio} onChange={handleChange}
                     placeholder="Write a short intro about yourself..." rows={3}
@@ -187,7 +212,7 @@ export default function StudentProfile() {
           {activeSection === "Education" && (
             <div className="flex flex-col gap-4">
               <p className="text-[10px] uppercase tracking-widest text-gray-600 border-b border-[#1a1a1e] pb-2">Education</p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs text-gray-500">Degree</label>
                   <select name="degree" value={form.degree} onChange={handleChange}
@@ -199,8 +224,8 @@ export default function StudentProfile() {
                 </div>
                 {[
                   { name: "branch", label: "Branch", placeholder: "e.g. Computer Science" },
-                  { name: "college", label: "College / University", placeholder: "e.g. SPPU, Pune" },
-                  { name: "cgpa", label: "CGPA / Percentage", placeholder: "e.g. 8.4 CGPA" },
+                  { name: "college", label: "College", placeholder: "e.g. SPPU, Pune" },
+                  { name: "cgpa", label: "CGPA", placeholder: "e.g. 8.4 CGPA" },
                 ].map((f) => (
                   <div key={f.name} className="flex flex-col gap-1.5">
                     <label className="text-xs text-gray-500">{f.label}</label>
@@ -258,17 +283,17 @@ export default function StudentProfile() {
               {resumeName && (
                 <div className="flex items-center gap-3 bg-blue-950 border border-blue-900 rounded-lg px-4 py-3">
                   <span className="text-xl">📄</span>
-                  <div className="flex-1">
-                    <p className="text-xs font-mono text-blue-300">{resumeName}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-mono text-blue-300 truncate">{resumeName}</p>
                     <p className="text-[10px] text-blue-600 mt-0.5">Current resume</p>
                   </div>
                   <button onClick={() => { setResumeName(""); setResumeFile(null); }}
-                    className="text-xs text-blue-700 hover:text-red-400 transition-colors">Remove</button>
+                    className="text-xs text-blue-700 hover:text-red-400 transition-colors flex-shrink-0">Remove</button>
                 </div>
               )}
               <label className="border border-dashed border-[#2a2a2e] hover:border-blue-500 rounded-xl p-8 flex flex-col items-center gap-2 cursor-pointer transition-colors bg-[#0f0f11]">
                 <span className="text-3xl">⬆</span>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 text-center">
                   <span className="text-blue-400">Click to upload</span> or drag & drop
                 </p>
                 <p className="text-xs text-gray-600">PDF only · Max 5 MB</p>
@@ -276,7 +301,7 @@ export default function StudentProfile() {
               </label>
               {resumeFile && (
                 <div className="text-xs text-green-400 bg-green-950 border border-green-900 rounded-lg px-3 py-2">
-                  ✓ {resumeFile.name} selected — click "Save Changes" to upload
+                  ✓ {resumeFile.name} — click "Save Changes" to upload
                 </div>
               )}
             </div>
@@ -291,8 +316,8 @@ export default function StudentProfile() {
                 { name: "github", label: "GitHub", placeholder: "github.com/yourusername" },
                 { name: "portfolio", label: "Portfolio", placeholder: "yourportfolio.dev" },
               ].map((link) => (
-                <div key={link.name} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-600 w-20 flex-shrink-0">{link.label}</span>
+                <div key={link.name} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <span className="text-xs text-gray-600 sm:w-20 flex-shrink-0">{link.label}</span>
                   <input name={link.name} value={form[link.name]} onChange={handleChange}
                     placeholder={link.placeholder}
                     className="flex-1 bg-[#0f0f11] border border-[#1e1e22] rounded-lg px-3 py-2.5 text-xs text-gray-200 outline-none focus:border-blue-500 transition-colors placeholder-gray-700" />
@@ -301,10 +326,10 @@ export default function StudentProfile() {
             </div>
           )}
 
-          {/* BOTTOM ROW */}
-          <div className="flex justify-end gap-2 mt-8 pt-5 border-t border-[#1a1a1e]">
+          {/* SAVE BUTTON */}
+          <div className="flex justify-end mt-8 pt-5 border-t border-[#1a1a1e]">
             <button onClick={handleSave} disabled={saving}
-              className="text-xs bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg transition-colors disabled:opacity-50">
+              className="w-full sm:w-auto text-sm bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-xl transition-colors disabled:opacity-50">
               {saving ? "Saving..." : saved ? "✓ Saved!" : "Save Changes"}
             </button>
           </div>
