@@ -1,23 +1,17 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
 
-// Auth
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Landing from "./pages/Landing.jsx";
+import MyApplications from "./pages/MyApplications.jsx";
+import JobDetail from "./pages/JobDetail.jsx";
+import StudentProfile from "./pages/student/StudentProfile.jsx";
+import SavedJobs from "./pages/student/SavedJobs.jsx";
 
-// Student
-import Landing from "./pages/Landing";
-import MyApplications from "./pages/MyApplications";
-import JobDetail from "./pages/JobDetail";
-import StudentProfile from "./pages/student/StudentProfile";
-import SavedJobs from "./pages/student/SavedJobs";
+import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard.jsx";
+import PostJob from "./pages/recruiter/PostJob.jsx";
+import ViewApplicants from "./pages/recruiter/ViewApplicants.jsx";
 
-// Recruiter
-import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
-import PostJob from "./pages/recruiter/PostJob";
-import ViewApplicants from "./pages/recruiter/ViewApplicants";
-
-// Shared
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function RoleRedirect() {
   const role = localStorage.getItem("role");
