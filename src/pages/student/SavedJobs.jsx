@@ -36,12 +36,11 @@ export default function SavedJobs() {
     <div className="min-h-screen bg-[#0c0c0e] text-gray-300">
       <Navbar />
 
-      <div className="max-w-3xl mx-auto px-8 py-10">
+      <div className="max-w-3xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
 
-        {/* HEADER */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <p className="text-xs font-mono text-gray-600 mb-2">your collection</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-gray-100">Saved Jobs</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-100">Saved Jobs</h1>
           <p className="text-sm text-gray-500 mt-2 font-light">
             Jobs you bookmarked — apply before they close.
           </p>
@@ -61,38 +60,35 @@ export default function SavedJobs() {
           <div className="flex flex-col gap-3">
             {saved.map((job) => (
               <div key={job.id}
-                className="bg-[#0f0f11] border border-[#1e1e22] rounded-2xl p-5 hover:border-[#333] transition-colors">
-                <div className="flex gap-4 items-start">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold font-mono flex-shrink-0 ${job.logoColor}`}>
+                className="bg-[#0f0f11] border border-[#1e1e22] rounded-2xl p-4 sm:p-5 hover:border-[#333] transition-colors">
+                <div className="flex gap-3 sm:gap-4 items-start">
+                  <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center text-sm font-bold font-mono flex-shrink-0 ${job.logoColor}`}>
                     {job.logo}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h2 className="text-sm font-medium text-gray-200">{job.title}</h2>
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="min-w-0">
+                        <h2 className="text-sm font-medium text-gray-200 truncate">{job.title}</h2>
                         <p className="text-xs text-gray-500 mt-0.5">{job.company} · {job.location}</p>
                       </div>
                       <button onClick={() => removeJob(job.id)}
-                        className="text-gray-700 hover:text-red-400 text-xs transition-colors ml-4 flex-shrink-0">
-                        Remove ×
+                        className="text-gray-700 hover:text-red-400 text-xs transition-colors flex-shrink-0">
+                        ×
                       </button>
                     </div>
 
                     <div className="flex flex-wrap gap-1.5 mt-3">
                       <span className="text-[10px] text-gray-500 border border-[#1e1e22] bg-[#111] rounded px-2 py-0.5">{job.mode}</span>
                       <span className="text-[10px] text-gray-500 border border-[#1e1e22] bg-[#111] rounded px-2 py-0.5">{job.type}</span>
-                      {job.skills.slice(0, 3).map((s) => (
+                      {job.skills.slice(0, 2).map((s) => (
                         <span key={s} className="text-[10px] text-blue-400 border border-blue-900 bg-blue-950 rounded px-2 py-0.5 font-mono">{s}</span>
                       ))}
                     </div>
 
-                    <div className="flex justify-between items-center mt-4 pt-3 border-t border-[#1a1a1e]">
-                      <div className="flex gap-4 text-[10px] font-mono">
+                    <div className="flex flex-wrap justify-between items-center gap-2 mt-4 pt-3 border-t border-[#1a1a1e]">
+                      <div className="flex flex-wrap gap-3 text-[10px] font-mono">
                         <span className="text-blue-400">{job.salary}</span>
-                        <span className="text-gray-700">Saved {job.savedOn}</span>
-                        <span className={`${new Date(job.deadline) < new Date() ? "text-red-500" : "text-gray-600"}`}>
-                          Deadline {job.deadline}
-                        </span>
+                        <span className="text-gray-700 hidden sm:inline">Saved {job.savedOn}</span>
                       </div>
                       <button onClick={() => navigate(`/jobs/${job.id}`)}
                         className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-lg transition-colors font-medium">
