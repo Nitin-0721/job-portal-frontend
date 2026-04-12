@@ -19,6 +19,9 @@ import ViewApplicants from "./pages/recruiter/ViewApplicants";
 // Shared
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 function RoleRedirect() {
   const role = localStorage.getItem("role");
   if (role === "recruiter") return <Navigate to="/dashboard" replace />;
@@ -63,6 +66,9 @@ export default function App() {
 
       {/* FALLBACK */}
       <Route path="*" element={<RoleRedirect />} />
+
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
 
     </Routes>
   );
