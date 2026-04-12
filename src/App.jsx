@@ -64,11 +64,13 @@ export default function App() {
         <ProtectedRoute allowedRoles={["recruiter"]}><ViewApplicants /></ProtectedRoute>
       } />
 
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+
       {/* FALLBACK */}
       <Route path="*" element={<RoleRedirect />} />
 
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
+
 
     </Routes>
   );
